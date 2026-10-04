@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Projekt-Vorschau — Multiagent & Subagent</title>
+<style>
+  :root {
+    --bg:#07070c; --card:rgba(255,255,255,.04); --border:rgba(255,255,255,.08);
+    --text:#f1f5f9; --muted:#94a3b8; --accent:#818cf8; --green:#4ade80;
+    --purple:#c084fc; --red:#f87171; --yellow:#facc15;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:28px}
+  .wrap{max-width:1120px;margin:0 auto}
+  h1{font-size:1.75rem;margin:0 0 6px}
+  .sub{color:var(--muted);margin-bottom:22px}
+  .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
+  h2{margin:0 0 12px;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .stack{display:flex;flex-direction:column;gap:10px}
+  .node{border:1px solid var(--border);border-left:3px solid var(--green);border-radius:10px;padding:10px 12px;background:rgba(255,255,255,.02)}
+  .node.sub{margin-left:22px;border-left-color:var(--accent)}
+  .node.gsub{margin-left:44px;border-left-color:var(--purple)}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .name{font-weight:700}
+  .pill{font-size:10px;padding:2px 7px;border-radius:999px;border:1px solid var(--border)}
+  .live{color:var(--green);border-color:rgba(74,222,128,.35)}
+  .idle{color:var(--muted)}
+  .fail{color:var(--red);border-color:rgba(248,113,113,.35)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:8px 6px;border-bottom:1px solid var(--border);text-align:left}
+  th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+  .kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px}
+  .kv span:last-child{font-weight:600;color:var(--accent)}
+  ul{margin:8px 0 0;padding-left:18px;color:var(--muted);line-height:1.55}
+  a{color:var(--accent)}
+  .hero{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .tag{background:rgba(129,140,248,.12);color:var(--accent);border:1px solid rgba(129,140,248,.3);padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Projekt-Vorschau: Multiagent-System</h1>
+      <div class="sub">OpenClaw Dashboard · PLAN-Phase abgeschlossen · Observability-first</div>
+    </div>
+    <div class="tag">Phase: PLAN ✅ → BUILD als Nächstes</div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Mockup — Agent Hierarchy</h2>
+      <div class="stack">
+        <div class="node">
+          <div class="row"><span class="name">main · Telegram Ops</span><span class="pill live">● live</span><span class="pill">claude-opus</span></div>
+        </div>
+        <div class="node sub">
+          <div class="row"><span class="name">sub · Web research</span><span class="pill live">● live</span><span class="pill">sonnet</span></div>
+        </div>
+        <div class="node gsub">
+          <div class="row"><span class="name">sub-sub · Summarize PDF</span><span class="pill idle">idle</span><span class="pill">haiku</span></div>
+        </div>
+        <div class="node">
+          <div class="row"><span class="name">work · Admin cron parent</span><span class="pill idle">idle</span><span class="pill">kimi</span></div>
+        </div>
+        <div class="node sub">
+          <div class="row"><span class="name">sub · vault maintenance</span><span class="pill fail">failed</span><span class="pill">gpt</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Mockup — Subagent Limits</h2>
+      <div class="kv"><span>Max Depth</span><span>3</span></div>
+      <div class="kv"><span>Max Children/Agent</span><span>8</span></div>
+      <div class="kv"><span>Max Concurrent</span><span>4</span></div>
+      <div class="kv"><span>Queue byRuntime.subagent</span><span>5 active</span></div>
+      <h2 style="margin-top:18px">Tech-Stack</h2>
+      <ul>
+        <li>Go stdlib HTTP + embedded SPA</li>
+        <li>CLI: <code>tasks list --runtime subagent</code></li>
+        <li>Sessions: <code>spawnedBy</code> Hierarchy</li>
+        <li>Zero SQLite driver (constraint)</li>
+      </ul>
+    </section>
+
+    <section class="card" style="grid-column:1/-1">
+      <h2>Mockup — Sub-Agent Activity</h2>
+      <table>
+        <thead><tr><th>Task</th><th>Agent</th><th>Dauer</th><th>Status</th><th>Zeit</th></tr></thead>
+        <tbody>
+          <tr><td>Research competitor pricing</td><td>main</td><td>1m</td><td><span class="pill live">succeeded</span></td><td>08:14</td></tr>
+          <tr><td>Draft weekly report</td><td>work</td><td>3m</td><td><span class="pill live">running</span></td><td>08:16</td></tr>
+          <tr><td>Scrape inbox pipeline</td><td>work</td><td>12s</td><td><span class="pill fail">failed</span></td><td>07:55</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" style="grid-column:1/-1">
+      <h2>Roadmap-Vorschau BUILD</h2>
+      <ul>
+        <li><strong>P0</strong> Empty-vs-offline Transparenz + Status-Aggregates</li>
+        <li><strong>P1</strong> Filter im Activity-Panel + Deep Tree</li>
+        <li><strong>P2</strong> optionale Steuer-Actions nur loopback (später)</li>
+      </ul>
+      <p class="sub" style="margin-top:12px">
+        Spec: <a href="docs/MULTIAGENT_SYSTEM.md">docs/MULTIAGENT_SYSTEM.md</a> ·
+        Plan: <a href="PROJEKT_ARCHITEKTURPLAN.md">PROJEKT_ARCHITEKTURPLAN.md</a> ·
+        Todos: <a href="MASTER_TODO_LIST.html">MASTER_TODO_LIST.html</a>
+      </p>
+    </section>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Master Todo — Multiagent & Subagent System</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: rgba(255,255,255,.04);
+    --border: rgba(255,255,255,.08);
+    --text: #e5e5e5;
+    --muted: #737373;
+    --accent: #6366f1;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --red: #f87171;
+    --purple: #a78bfa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    background: radial-gradient(1200px 600px at 10% -10%, #1e1b4b 0%, var(--bg) 55%);
+    color: var(--text); min-height: 100vh; padding: 24px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header {
+    display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 24px;
+  }
+  h1 { margin: 0; font-size: 1.6rem; letter-spacing: -.02em; }
+  .meta { color: var(--muted); font-size: .9rem; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 600;
+    border: 1px solid var(--border); background: var(--surface);
+  }
+  .badge.plan { color: var(--accent); border-color: rgba(99,102,241,.4); }
+  .badge.done { color: var(--green); border-color: rgba(74,222,128,.35); }
+  .badge.work { color: var(--yellow); border-color: rgba(250,204,21,.35); }
+  .progress-shell {
+    height: 12px; border-radius: 999px; background: rgba(255,255,255,.06);
+    overflow: hidden; margin-top: 10px; min-width: 220px;
+  }
+  .progress-fill {
+    height: 100%; width: 18%;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    transition: width .3s ease;
+  }
+  .grid { display: grid; gap: 14px; }
+  .phase {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 18px;
+  }
+  .phase h2 {
+    margin: 0 0 8px; font-size: 1.05rem; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  .phase .skill { color: var(--muted); font-size: .8rem; font-weight: 500; }
+  .bar {
+    height: 6px; border-radius: 999px; background: rgba(255,255,255,.06); margin: 8px 0 12px;
+  }
+  .bar > span { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 0; border-top: 1px solid rgba(255,255,255,.04); font-size: .92rem;
+  }
+  li:first-child { border-top: 0; }
+  input[type=checkbox] {
+    width: 16px; height: 16px; margin-top: 2px; accent-color: var(--accent); cursor: pointer;
+  }
+  li.done label { color: var(--muted); text-decoration: line-through; }
+  .gate {
+    text-align: center; padding: 10px; color: var(--purple); font-size: .85rem;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  footer { margin-top: 28px; color: var(--muted); font-size: .8rem; text-align: center; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>🦞 Multiagent &amp; Subagent — Master Todo</h1>
+      <div class="meta">OpenClaw Dashboard · Start 2026-10-04 · Modus: repo-master PLAN</div>
+      <div class="progress-shell" title="Gesamtfortschritt"><div class="progress-fill" id="totalBar"></div></div>
+      <div class="meta" id="totalLbl">Gesamtfortschritt: 18%</div>
+    </div>
+    <div>
+      <span class="badge plan">📋 Aktuelle Phase: PLAN</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <section class="phase" data-phase="0">
+      <h2>0. Projekt-Start <span class="badge done">✅ fertig</span></h2>
+      <div class="skill">Skill: repo-master</div>
+      <div class="bar"><span style="width:100%"></span></div>
+      <ul>
+        <li class="done"><input type="checkbox" checked disabled/><label>Visualisierte Todo-Liste anlegen</label></li>
+        <li class="done"><input type="checkbox" checked disabled/><label>Bestandsaufnahme Subagent-Codepfade</label></li>
+      </ul>
+    </section>
+
+    <div class="gate">▼ Planungs-Gate</div>
+
+    <section class="phase" data-phase="1">
+      <h2>1. PLAN <span class="badge done">✅ fertig</span></h2>
+      <div class="skill">Skills: repo-analyzer · repo-architect · repo-subagent-orchestrator</div>
+      <div class="bar"><span style="width:100%"></span></div>
+      <ul>
+        <li class="done"><input type="checkbox" checked data-k="p1a"/><label>Gap-Analysis Multiagent/Subagent Ist-Zustand</label></li>
+        <li class="done"><input type="checkbox" checked data-k="p1b"/><label>5-Säulen-Bauplan (`PROJEKT_ARCHITEKTURPLAN.md`)</label></li>
+        <li class="done"><input type="checkbox" checked data-k="p1c"/><label>Kanonische Spec (`docs/MULTIAGENT_SYSTEM.md`)</label></li>
+        <li class="done"><input type="checkbox" checked data-k="p1d"/><label>Warp-Plan + Vorschau HTML</label></li>
+      </ul>
+    </section>
+
+    <div class="gate">▼ Build-Gate</div>
+
+    <section class="phase" data-phase="2">
+      <h2>2. BUILD <span class="badge work">⏳ offen</span></h2>
+      <div class="skill">Skills: repo-coder · frontend-dashboard · sage</div>
+      <div class="bar"><span style="width:0%" id="b2"></span></div>
+      <ul>
+        <li><input type="checkbox" data-k="p2a"/><label>P0: Empty-vs-offline Label im Sub-Agent Panel</label></li>
+        <li><input type="checkbox" data-k="p2b"/><label>P0: Status-Aggregation running/queued/failed</label></li>
+        <li><input type="checkbox" data-k="p2c"/><label>P1: Filter/Search Activity Panel</label></li>
+        <li><input type="checkbox" data-k="p2d"/><label>P1: Deep Agent-Tree bis maxSpawnDepth</label></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="3">
+      <h2>3. TEST <span class="badge work">⏳ offen</span></h2>
+      <div class="skill">Skills: repo-tester · mach</div>
+      <div class="bar"><span style="width:0%" id="b3"></span></div>
+      <ul>
+        <li><input type="checkbox" data-k="p3a"/><label>Fixtures nested/empty/offline erweitern</label></li>
+        <li><input type="checkbox" data-k="p3b"/><label>`go test -race ./internal/apprefresh/…` grün</label></li>
+        <li><input type="checkbox" data-k="p3c"/><label>Web-Contract / Browser-Fixture</label></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="4">
+      <h2>4. LEARN <span class="badge work">⏳ offen</span></h2>
+      <div class="skill">Skills: repo-reviewer · core · orion</div>
+      <div class="bar"><span style="width:0%" id="b4"></span></div>
+      <ul>
+        <li><input type="checkbox" data-k="p4a"/><label>OWASP/Read-only Boundary Review</label></li>
+        <li><input type="checkbox" data-k="p4b"/><label>`CODE_REVIEW.md` Multiagent-Abschnitt</label></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="5">
+      <h2>5. LOOP <span class="badge work">⏳ offen</span></h2>
+      <div class="skill">Skills: repo-debugger · repo-autonomous-loop</div>
+      <div class="bar"><span style="width:0%" id="b5"></span></div>
+      <ul>
+        <li><input type="checkbox" data-k="p5a"/><label>`make check` 100% grün</label></li>
+        <li><input type="checkbox" data-k="p5b"/><label>Auto-Healing Report</label></li>
+      </ul>
+    </section>
+
+    <section class="phase" data-phase="6">
+      <h2>6. DEPLOY <span class="badge work">⏳ offen</span></h2>
+      <div class="skill">Skills: repo-polisher · vega</div>
+      <div class="bar"><span style="width:0%" id="b6"></span></div>
+      <ul>
+        <li><input type="checkbox" data-k="p6a"/><label>README/CHANGELOG Multiagent-Abschnitt</label></li>
+        <li><input type="checkbox" data-k="p6b"/><label>Release notes / Screenshots</label></li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    Artefakte:
+    <a href="docs/MULTIAGENT_SYSTEM.md">MULTIAGENT_SYSTEM.md</a> ·
+    <a href="PROJEKT_ARCHITEKTURPLAN.md">PROJEKT_ARCHITEKTURPLAN.md</a> ·
+    <a href="PROJEKT_VORSCHAU.html">PROJEKT_VORSCHAU.html</a> ·
+    <a href="REPO_MASTER_DASHBOARD.md">REPO_MASTER_DASHBOARD.md</a>
+  </footer>
+</div>
+<script>
+  const KEY = 'oc-multiagent-todo-v1';
+  const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+  function recalc() {
+    const boxes = [...document.querySelectorAll('input[type=checkbox][data-k]')];
+    const on = boxes.filter(b => b.checked).length;
+    const pct = Math.round((on / boxes.length) * 100);
+    // PLAN items count as baseline ~18% already conceptually; use real ratio:
+    document.getElementById('totalBar').style.width = pct + '%';
+    document.getElementById('totalLbl').textContent = 'Gesamtfortschritt: ' + pct + '%';
+    document.querySelectorAll('.phase').forEach(phase => {
+      const bs = [...phase.querySelectorAll('input[data-k]')];
+      if (!bs.length) return;
+      const p = Math.round(bs.filter(b => b.checked).length / bs.length * 100);
+      const bar = phase.querySelector('.bar > span');
+      if (bar) bar.style.width = p + '%';
+    });
+  }
+  document.querySelectorAll('input[type=checkbox][data-k]').forEach(cb => {
+    if (saved[cb.dataset.k]) cb.checked = true;
+    cb.addEventListener('change', () => {
+      cb.closest('li').classList.toggle('done', cb.checked);
+      const state = {};
+      document.querySelectorAll('input[data-k]').forEach(x => state[x.dataset.k] = x.checked);
+      localStorage.setItem(KEY, JSON.stringify(state));
+      recalc();
+    });
+    if (cb.checked) cb.closest('li').classList.add('done');
+  });
+  recalc();
+</script>
+</body>
+</html>
